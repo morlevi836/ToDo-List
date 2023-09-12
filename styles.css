@@ -173,7 +173,7 @@ body {
 @media only screen and (max-width: 680px) {  
     
     .Title {
-        font-size: 80px;
+        font-size: 50px;
         margin-top: 30px;
         padding: 0px 10px;
     }
@@ -184,7 +184,7 @@ body {
     
     .Header {
         gap: 10px;
-        margin-top: -40px;
+        margin-top: -20px;
     }
     
     .Header__Textarea {
@@ -199,8 +199,10 @@ body {
     }
     
     .List__Items {
-        margin-top: 25px;
+        margin-top: 15px;
         width: 75%;
+        height: 55vh;
+
     }
 
     .List__Text {
