@@ -1,8 +1,9 @@
 const txtArea = document.querySelector(".Header__Textarea");
 const btnV = document.querySelector(".Button__V");
 const btnSearch = document.querySelector(".Button__Search");
+const imgSearch = document.querySelector(".imgSearch");
 const items = document.querySelector(".List__Items");
-let flag = true;
+let buttonEventListenerAttached = false;
 
 getTasks().forEach((task) => {
   createTaskEl(task.id, task.content);
@@ -11,9 +12,13 @@ getTasks().forEach((task) => {
 document.addEventListener(
   "keydown",
   (event) => {
-    if (event.key === "Enter" && flag) {
+    if (event.key === "Enter" && !buttonEventListenerAttached) {
       event.preventDefault();
       addTask();
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      btnV.click();
+      addSearchTask();
     }
   },
   true
@@ -69,7 +74,11 @@ function createTaskEl(id, content) {
   div.appendChild(deleteButton);
   div.appendChild(editButton);
 
-  deleteButton.addEventListener("click", (id, div) => {});
+  deleteButton.addEventListener("click", () => {
+    if (confirm("Do you want to delete this task?")) {
+      deleteTask(id, div);
+    }
+  });
 
   editButton.addEventListener("click", () => {
     text.contentEditable = true;
@@ -98,19 +107,21 @@ function createTaskEl(id, content) {
     }
   });
 
+  btnV.addEventListener("click", () => {
+    if (buttonEventListenerAttached) {
+      getTasks().forEach(() => {
+        div.remove();
+      });
+    }
+  });
+
   txtArea.value = "";
   items.appendChild(div);
 }
 
 function deleteTask(id, element) {
-  if (confirm("Do you want to delete this task?")) {
-    const tasks = getTasks().filter((task) => task.id !== id);
-    saveTask(tasks);
-    removeElement(element);
-  }
-}
-
-function removeElement(element) {
+  const tasks = getTasks().filter((task) => task.id !== id);
+  saveTask(tasks);
   items.removeChild(element);
 }
 
@@ -145,25 +156,41 @@ function getTasks() {
 }
 
 function searchTask() {
-  flag = false;
-  btnV.style.display = "none";
   txtArea.placeholder = "What do you want to search...";
+  imgSearch.src = "./assets/x-img.png";
+  btnSearch.style.backgroundColor = "#ee1f37";
+  btnV.removeEventListener("click", addTask);
+  btnSearch.removeEventListener("click", searchTask);
+  btnV.addEventListener("click", addSearchTask);
+  btnSearch.addEventListener("click", exitSearchTask);
+  buttonEventListenerAttached = true;
+}
+
+function addSearchTask() {
   const content = txtArea.value.toLowerCase().trim();
   const tasks = getTasks().filter((task) => task.content == content);
-  const otherTasks = getTasks();
-  console.log(tasks);
-  console.log(otherTasks);
-  otherTasks.forEach((task) => {
-    console.log(task);
-    // removeElement(task.content);
-  });
   tasks.forEach((task) => {
-    createTaskEl((task.id = 0), task.content);
+    createTaskEl(task.id, task.content);
+  });
+  txtArea.value = "";
+}
+
+function exitSearchTask() {
+  txtArea.value = "";
+  btnV.click();
+  txtArea.placeholder = "Write your task...";
+  imgSearch.src = "./assets/search.png";
+  btnSearch.style.backgroundColor = "aliceblue";
+  btnV.removeEventListener("click", addSearchTask);
+  btnSearch.removeEventListener("click", exitSearchTask);
+  btnV.addEventListener("click", addTask);
+  btnSearch.addEventListener("click", searchTask);
+  buttonEventListenerAttached = false;
+  getTasks().forEach((task) => {
+    createTaskEl(task.id, task.content);
   });
 }
 
-if (flag) {
-  btnV.addEventListener("click", addTask);
-}
+btnV.addEventListener("click", addTask);
 
 btnSearch.addEventListener("click", searchTask);
