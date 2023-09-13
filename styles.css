@@ -23,6 +23,10 @@ body {
     text-shadow: 5px -2px lawngreen;
 }
 
+.Img {
+    width: 90%;
+}
+
 .Header {
     display: flex;
     flex-direction: row;
@@ -173,10 +177,6 @@ body {
 
 .List__Button:active {
     box-shadow:  0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.Img {
-    width: 100%;
 }
 
 .Button__Edit {
