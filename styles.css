@@ -69,13 +69,9 @@ body {
     box-shadow:  0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.Header__Img {
-    width: 100%;
-}
-
 .List__Items {
     margin-top: 15px;
-    width: 100vh;
+    width: 120vh;
     height: 65vh;
     border: none;
     border-radius: 15px;
@@ -146,9 +142,17 @@ body {
 }
 
 .List__Text {
-    width: 85%;
+    width: 80%;
     text-align: justify;
     font-family: 'Roboto', sans-serif;
+    transition: all 200ms ease-in-out;
+}
+
+.List__TextEdit{
+    padding: 10px;
+    border: 2px dashed #0dde22;
+    border-radius: 15px;
+    transition: all 200ms ease-in-out;
 }
 
 .List__Button {
@@ -167,7 +171,15 @@ body {
 }
 
 .List__Button:active {
-    color: red;
+    box-shadow:  0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.Img {
+    width: 100%;
+}
+
+.Button__Edit {
+    right: 30px;
 }
 
 @media only screen and (max-width: 680px) {  
@@ -205,8 +217,7 @@ body {
     }
 
     .List__Text {
-        width: 75%;
-        text-align: justify;
-        font-family: 'Roboto', sans-serif;
+        width: 45%;
+        
     }
 }
