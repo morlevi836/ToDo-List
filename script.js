@@ -200,7 +200,7 @@ function getTasks() {
 }
 
 function searchTask() {
-  txtArea.placeholder = "What do you want to search...";
+  txtArea.placeholder = "Search...";
   imgSearch.src = "./assets/X-img.png";
   btnSearch.style.backgroundColor = "#ee1f37";
   btnV.removeEventListener("click", addTask);
