@@ -131,6 +131,7 @@ body {
     border-radius: 10px;
     position: relative;
     margin-bottom: 10px;
+    cursor: move;
 }
 
 .List__Label {
@@ -183,6 +184,12 @@ body {
     right: 30px;
 }
 
+.draggable {
+    scale: 1.03;
+    box-shadow:  0 0 5px rgba(0, 0, 0, 0.5);
+    opacity: 0.5;
+}
+
 @media only screen and (max-width: 680px) {  
     
     .Title {
@@ -214,7 +221,11 @@ body {
     .List__Items {
         margin-top: 15px;
         width: 75%;
-        height: 55vh;
+        height: 60vh;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
     }
 
     .List__Text {

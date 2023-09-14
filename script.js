@@ -65,6 +65,8 @@ function createTaskEl(id, content) {
   confirmEditImg.classList.add("Img");
   confirmEditImg.src = "./assets/ok.png";
 
+  div.setAttribute("draggable", true);
+
   label.appendChild(input);
   deleteButton.appendChild(deleteImg);
   editButton.appendChild(editImg);
@@ -73,6 +75,14 @@ function createTaskEl(id, content) {
   div.appendChild(text);
   div.appendChild(deleteButton);
   div.appendChild(editButton);
+
+  div.addEventListener("dragstart", () => {
+    div.classList.add("draggable");
+  });
+
+  div.addEventListener("dragend", () => {
+    div.classList.remove("draggable");
+  });
 
   deleteButton.addEventListener("click", () => {
     if (confirm("Do you want to delete this task?")) {
@@ -117,6 +127,40 @@ function createTaskEl(id, content) {
 
   txtArea.value = "";
   items.appendChild(div);
+}
+
+items.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  const afterElement = getDragAfterElement(items, event.clientY);
+  const draggable = document.querySelector(".draggable");
+
+  if (afterElement == null) {
+    items.appendChild(draggable);
+  } else {
+    items.insertBefore(draggable, afterElement);
+  }
+});
+
+function getDragAfterElement(container, mouseY) {
+  const draggableElements = [
+    ...container.querySelectorAll(".List__Flex:not(.draggable)"),
+  ];
+
+  return draggableElements.reduce(
+    (closet, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = mouseY - box.top - box.height / 2;
+
+      if (offset < 0 && offset > closet.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closet;
+      }
+    },
+    {
+      offset: Number.NEGATIVE_INFINITY,
+    }
+  ).element;
 }
 
 function deleteTask(id, element) {
