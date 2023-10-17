@@ -124,21 +124,6 @@ function createTaskEl(id, content, toggle) {
   items.appendChild(div);
 }
 
-function toggleTask(id, text) {
-  const tasks = getTasks();
-  const target = tasks.filter((task) => task.id === id);
-  target.map((task) => {
-    if (task.toggle) {
-      task.toggle = false;
-      text.style.textDecoration = "none";
-    } else {
-      task.toggle = true;
-      text.style.textDecoration = "line-through";
-    }
-  });
-  saveTask(tasks);
-}
-
 items.addEventListener("dragover", (event) => {
   event.preventDefault();
   const afterElement = getDragAfterElement(items, event.clientY);
@@ -173,6 +158,21 @@ function getDragAfterElement(container, mouseY) {
   ).element;
 }
 
+function toggleTask(id, text) {
+  const tasks = getTasks();
+  const target = tasks.filter((task) => task.id === id);
+  target.map((task) => {
+    if (task.toggle) {
+      task.toggle = false;
+      text.style.textDecoration = "none";
+    } else {
+      task.toggle = true;
+      text.style.textDecoration = "line-through";
+    }
+  });
+  saveTask(tasks);
+}
+
 function deleteTask(id, element) {
   const tasks = getTasks().filter((task) => task.id !== id);
   saveTask(tasks);
@@ -196,11 +196,10 @@ function addTask() {
     };
     createTaskEl(taskObj.id, taskObj.content, taskObj.toggle);
     tasks.push(taskObj);
-    tasks.map((task1) => {
-      tasks.map((task2) => {
-      if (task1.content === task2.content) {
-        task2.id = task1.id;
-      }}
+    tasks.map((task) => {
+      if (task.content === taskObj.content) {
+        taskObj.id = task.id;
+      }
     });
     saveTask(tasks);
     txtArea.value = "";
