@@ -5,26 +5,21 @@ const imgSearch = document.querySelector(".imgSearch");
 const items = document.querySelector(".List__Items");
 let buttonEventListenerAttached = false;
 
-getTasks().forEach((task) => {
-  createTaskEl(task.id, task.content);
+getTasks().map((task) => {
+  createTaskEl(task.id, task.content, task.toggle);
 });
-
 document.addEventListener(
   "keydown",
   (event) => {
     if (event.key === "Enter" && !buttonEventListenerAttached) {
       event.preventDefault();
       addTask();
-    } else if (event.key === "Enter") {
-      event.preventDefault();
-      btnV.click();
-      addSearchTask();
     }
   },
   true
 );
 
-function createTaskEl(id, content) {
+function createTaskEl(id, content, toggle) {
   const div = document.createElement("div");
   const label = document.createElement("label");
   const input = document.createElement("input");
@@ -64,6 +59,11 @@ function createTaskEl(id, content) {
 
   confirmEditImg.classList.add("Img");
   confirmEditImg.src = "./assets/ok.png";
+
+  if (toggle) {
+    text.style.textDecoration = "line-through";
+    input.checked = true;
+  }
 
   div.setAttribute("draggable", true);
 
@@ -109,24 +109,34 @@ function createTaskEl(id, content) {
     }
   });
 
-  input.addEventListener("change", (event) => {
-    if (event.target.checked) {
-      text.style.textDecoration = "line-through";
-    } else {
-      text.style.textDecoration = "none";
-    }
+  input.addEventListener("change", () => {
+    toggleTask(id, text);
   });
 
   btnV.addEventListener("click", () => {
     if (buttonEventListenerAttached) {
-      getTasks().forEach(() => {
+      getTasks().map(() => {
         div.remove();
       });
     }
   });
 
-  txtArea.value = "";
   items.appendChild(div);
+}
+
+function toggleTask(id, text) {
+  const tasks = getTasks();
+  const target = tasks.filter((task) => task.id === id);
+  target.map((task) => {
+    if (task.toggle) {
+      task.toggle = false;
+      text.style.textDecoration = "none";
+    } else {
+      task.toggle = true;
+      text.style.textDecoration = "line-through";
+    }
+  });
+  saveTask(tasks);
 }
 
 items.addEventListener("dragover", (event) => {
@@ -182,10 +192,18 @@ function addTask() {
     const taskObj = {
       id: Math.floor(Math.random() * 100000),
       content: txtArea.value.toLowerCase(),
+      toggle: false,
     };
-    createTaskEl(taskObj.id, taskObj.content);
+    createTaskEl(taskObj.id, taskObj.content, taskObj.toggle);
     tasks.push(taskObj);
+    tasks.map((task1) => {
+      tasks.map((task2) => {
+      if (task1.content === task2.content) {
+        task2.id = task1.id;
+      }}
+    });
     saveTask(tasks);
+    txtArea.value = "";
   } else {
     alert("Textarea cannot be empty. Please enter some text.");
   }
@@ -205,18 +223,18 @@ function searchTask() {
   btnSearch.style.backgroundColor = "#ee1f37";
   btnV.removeEventListener("click", addTask);
   btnSearch.removeEventListener("click", searchTask);
-  btnV.addEventListener("click", addSearchTask);
   btnSearch.addEventListener("click", exitSearchTask);
+  txtArea.addEventListener("input", addSearchTask);
   buttonEventListenerAttached = true;
 }
 
 function addSearchTask() {
+  btnV.click();
   const content = txtArea.value.toLowerCase().trim();
-  const tasks = getTasks().filter((task) => task.content == content);
+  const tasks = getTasks().filter((task) => task.content.includes(content));
   tasks.forEach((task) => {
-    createTaskEl(task.id, task.content);
+    createTaskEl(task.id, task.content, task.toggle);
   });
-  txtArea.value = "";
 }
 
 function exitSearchTask() {
@@ -225,16 +243,15 @@ function exitSearchTask() {
   txtArea.placeholder = "Write your task...";
   imgSearch.src = "./assets/search.png";
   btnSearch.style.backgroundColor = "aliceblue";
-  btnV.removeEventListener("click", addSearchTask);
   btnSearch.removeEventListener("click", exitSearchTask);
   btnV.addEventListener("click", addTask);
   btnSearch.addEventListener("click", searchTask);
+  txtArea.removeEventListener("input", addSearchTask);
   buttonEventListenerAttached = false;
   getTasks().forEach((task) => {
-    createTaskEl(task.id, task.content);
+    createTaskEl(task.id, task.content, task.toggle);
   });
 }
 
 btnV.addEventListener("click", addTask);
-
 btnSearch.addEventListener("click", searchTask);
